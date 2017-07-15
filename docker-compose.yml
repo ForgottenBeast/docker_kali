@@ -1,0 +1,25 @@
+version: "3"
+services:
+
+  kali:
+    build: kali/
+    image: kaliserver
+    restart: always
+    environment:
+      - SSH_PW=
+      - SSH_USER=
+#open ports for reverse meterpreter shells and that kind of things
+#    ports:
+#      - "400-500:400-500"
+
+  torhh:
+    restart: always
+    image: goldy/tor-hidden-service
+    links:
+      - kali
+    environment:
+      KALI_KEY: |
+        -----BEGIN RSA PRIVATE KEY-----
+        [snip]
+        -----END RSA PRIVATE KEY-----
+      KALI_PORTS: "22:22"
