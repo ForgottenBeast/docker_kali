@@ -3,7 +3,7 @@ services:
 
   kali:
     build: kali/
-    image: kaliserver
+    image: forgottenbeast/kali_docker
     restart: always
     environment:
       - SSH_PW=
