@@ -1,20 +1,60 @@
 version: "3"
+networks:
+  kalinet:
+    ipam:
+      config:
+        - subnet: 172.31.0.0/24
+
 services:
 
   kali:
     build: kali/
     image: forgottenbeast/kali_docker
     restart: always
+    cap_add:
+      - NET_ADMIN
     environment:
       - SSH_PW=
       - SSH_USER=
-#open ports for reverse meterpreter shells and that kind of things
-#    ports:
-#      - "400-500:400-500"
+    networks:
+      kalinet:
+        ipv4_address: 172.31.0.2
+
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    #open ports for reverse meterpreter shells and that kind of things
+    ports:
+      - "400-500:400-500/tcp"
+
+  gateway:
+    image: forgottenbeast/gtw
+    build:
+      context: gtw
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+
+    networks:
+      kalinet:
+        ipv4_address: 172.31.0.254
 
   torhh:
     restart: always
     image: goldy/tor-hidden-service
+    networks:
+      - kalinet
+
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
     links:
       - kali
     environment:
@@ -22,4 +62,5 @@ services:
         -----BEGIN RSA PRIVATE KEY-----
         [snip]
         -----END RSA PRIVATE KEY-----
+
       KALI_PORTS: "22:22"

@@ -13,4 +13,6 @@ if [ $? -ne 0 ]; then
     echo "PS1='${debian_chroot:+($debian_chroot)}\[\033[01;31m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /root/.bashrc
 fi
 
+ip route del 0/0
+ip route add default via 172.31.0.254
 /usr/sbin/sshd -D
