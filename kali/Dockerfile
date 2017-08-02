@@ -10,11 +10,13 @@ RUN curl http://winswitch.org/gpg.asc | apt-key add -
 RUN echo "deb http://winswitch.org/ jessie main" >\
         /etc/apt/sources.list.d/winswitch.list;
 
-RUN echo "deb http://ftp.fr.debian.org/debian/ jessie main" >> /etc/apt/sources.list
+RUN echo "deb http://ftp.ru.debian.org/debian/ jessie main" >> /etc/apt/sources.list
 
 RUN apt-get update
 
-RUN apt-get install -y xpra
+RUN apt-get install -y xpra python-pip
+
+RUN pip install --upgrade pip pycrypto
 
 RUN echo "X11Forwarding yes" >> /etc/ssh/sshd_config
 RUN echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
