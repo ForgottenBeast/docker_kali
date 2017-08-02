@@ -14,9 +14,7 @@ RUN echo "deb http://ftp.ru.debian.org/debian/ jessie main" >> /etc/apt/sources.
 
 RUN apt-get update
 
-RUN apt-get install -y xpra python-pip
-
-RUN pip install --upgrade pip pycrypto
+RUN apt-get install -y xpra
 
 RUN echo "X11Forwarding yes" >> /etc/ssh/sshd_config
 RUN echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
