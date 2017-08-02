@@ -15,5 +15,5 @@ fi
 
 ip route del 0/0
 ip route add default via 172.31.0.254
-sed -i 's/127.0.0.11/8.8.8.8/g' /etc/resolv.conf
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 /usr/sbin/sshd -D
