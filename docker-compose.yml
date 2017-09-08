@@ -1,9 +1,4 @@
 version: "3"
-networks:
-  kalinet:
-    ipam:
-      config:
-        - subnet: 172.31.0.0/24
 
 services:
 
@@ -16,10 +11,9 @@ services:
     environment:
       - SSH_PW=
       - SSH_USER=
-    networks:
-      kalinet:
-        ipv4_address: 172.31.0.2
 
+    volumes:
+      - kali_vpn_client:/etc/openvpn
     deploy:
       placement:
         constraints:
@@ -28,13 +22,14 @@ services:
     ports:
       - "400-500:400-500/tcp"
 
-  gateway:
-    image: forgottenbeast/vpnd_x86
+  vpn:
+    image: forgottenbeast/vpn:multiarch
     cap_add:
       - NET_ADMIN
 
     volumes:
-      - "./vpn.conf:/etc/openvpn/vpn.conf"
+    #put your pki in there, it's based on kylemanna/openvpn
+      - "kail_vpn_data:/etc/openvpn"
 
     devices:
       - "/dev/net/tun:/dev/net/tun"
@@ -44,15 +39,9 @@ services:
         constraints:
           - node.role == worker
 
-    networks:
-      kalinet:
-        ipv4_address: 172.31.0.254
-
   torhh:
     restart: always
     image: goldy/tor-hidden-service
-    networks:
-      - kalinet
 
     deploy:
       placement:
