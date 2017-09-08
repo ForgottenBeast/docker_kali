@@ -22,6 +22,8 @@ RUN echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
 RUN mkdir /var/run/sshd;\
     chmod 0755 /var/run/sshd;
 
+RUN apt-get install openvpn
+
 COPY runme.sh /runme.sh
 EXPOSE 22
 
