@@ -2,7 +2,7 @@
 
 getent passwd $SSH_USER  > /dev/null
 if [ $? -ne 0 ]; then
-    useradd -m -s /bin/bash $SSH_USER
+    useradd -s /bin/bash $SSH_USER
     usermod -a -G xpra $SSH_USER
     usermod -a -G sudo $SSH_USER
     echo "$SSH_USER:$SSH_PW"|chpasswd
