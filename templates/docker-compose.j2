@@ -22,8 +22,11 @@ services:
       - SSH_PW={{ kali_ssh_pw }}
       - SSH_USER={{ kali_ssh_user }}
 
+    devices:
+      - /dev/net/tun:/dev/net/tun
+
     volumes:
-      - {{ kali_vpn_data }}:/etc/openvpn
+      - {{ kali_vpn_volume }}:/etc/openvpn
       - {{ kali_data_volume }}:/home/{{ kali_ssh_user }}
 
   torhh:

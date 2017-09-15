@@ -1,9 +1,20 @@
 - hosts: vpn_server
   roles:
     - role: vpn
+      VPN_SERVICE_NAME: vpnd
+      OVPN_DATA: "vpn_data"
       CLIENTS:
         kali:
           ip: "192.168.255.101"
+
+- hosts: vpn_server
+  tags: kali_setup
+  strategy: debug
+  vars:
+
+    kali_reverse_ports:
+      - ports: "400:500" #inclusive range for iptables
+        proto: "tcp"
 
   tasks:
     - name: "Get vpn container ip"
@@ -16,22 +27,29 @@
         vpn_data: "{{ vpndata.stdout | from_json }}"
 
     - name: "Add vpn route"
-      command: ip route add {{ VPN_NETWORK.subnet }} {{ VPN_NETWORK.netmask }}\
-               via {{ vpn_data[0].Networks.bridge.IPAddress }}
+      command: ip route add {{ CLIENTS.kali.ip }} via {{ vpn_data[0].NetworkSettings.Networks.bridge.IPAddress }}
       become: True
 
-    - name: "setup kali reverse ports"
+    - name: "setup kali reverse ports DNAT"
       become: True
       iptables:
         table: nat
         chain: PREROUTING
-        source_port: "{{item.ports}}"
+        destination_port: "{{item.ports}}"
         protocol: "{{item.proto}}"
         jump: DNAT
         to_destination: "{{ CLIENTS.kali.ip }}"
       with_items: "{{ kali_reverse_ports }}"
 
+    - name: "setup kali packets forwarding"
+      become: True
+      iptables:
+        chain: FORWARD
+        destination: "{{ CLIENTS.kali.ip }}"
+        jump: ACCEPT
+
 - hosts: kali_server
   roles:
-    role: kali
-    become: True
+    - role: kali
+      become: True
+      tags: kali_setup

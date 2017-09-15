@@ -1,0 +1,43 @@
+- name: "Install docker requirements"
+  apt:
+    name: "{{ item }}"
+    state: installed
+    update_cache: True
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - software-properties-common
+    - gnupg2
+    - build-essential
+  when: inventory_hostname not in rancher_machines
+
+- name: "Add docker repository key"
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+  when: inventory_hostname not in rancher_machines
+
+- name: "Get key fingerprint"
+  command: apt-key fingerprint 0EBFCD88
+  register: key_fingerprint
+  when: inventory_hostname not in rancher_machines
+
+- name: "Check key fingerprint" 
+  assert:
+    that:
+      - "'Key fingerprint = 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88' in key_fingerprint['stdout']"
+  when: inventory_hostname not in rancher_machines
+
+- name: "Add docker repository"
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian jessie stable
+    state: present
+  when: inventory_hostname not in rancher_machines
+
+- name: "Install docker-ce"
+  apt:
+    name: docker-ce
+    update_cache: yes
+    state: installed
+  when: inventory_hostname not in rancher_machines
+

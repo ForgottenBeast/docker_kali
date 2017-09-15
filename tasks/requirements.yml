@@ -1,17 +1,31 @@
-- name: "Install ansible docker requirements"
+- name: "Install: ansible docker requirements"
   apt:
     name: python-setuptools
     state: installed
     update_cache: True
 
-- name: "Install python pip"
+- name: "Install: python pip"
   easy_install:
     name: pip
     state: latest
 
-- name: "Install docker-py and compose"
+- name: "Install: docker-py"
   pip:
     name: "{{ item }}"
   with_items:
     - docker-py
-    - docker-compose
+
+- name: "Install: docker-compose"
+  pip:
+    name: docker-compose
+    version: 1.9.0
+
+- name: "Check if docker is installed"
+  command: which docker
+  register: docker
+  ignore_errors: True
+
+- name: "Docker install"
+  include: docker_install.yml
+  become: True
+  when: docker|failed

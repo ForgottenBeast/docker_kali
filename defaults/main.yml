@@ -1,3 +1,4 @@
+alpine_image: "forgottenbeast/alpine:multiarch"
 kali_reverse_ports:
   - ports: "400:500" #inclusive range for iptables
     proto: "tcp"
@@ -5,6 +6,8 @@ kali_data_volume: "kalidata"
 kali_vpn_volume: "kalivpn"
 kali_ssh_user: "toto"
 kali_ssh_pw: "tutu"
+kali_vpn_endpoint: "192.168.200.2"
+VPN_SERVICE_NAME: "vpnd"
 tor_kali_hh_private_key: |
   -----BEGIN RSA PRIVATE KEY-----
   MIICWwIBAAKBgQCZqWFqN7MeHCb3xuXZcwY68i3SoS7WFczkZsJil/j8F3ck9VQt
@@ -21,9 +24,3 @@ tor_kali_hh_private_key: |
   vMcXFphpow+mZ46iUQJAezFLSB9OOCos+bAyaZBNvT6cMihhamekBQ0ZllEFUZ0t
   iEnaRiIgQQ/6hiEz/+lbK8iUOaToz0G91/CmFDa2gg==
   -----END RSA PRIVATE KEY-----
-
-VPN_SERVICES_CERTS:
-  kali:
-    endpoint: "192.168.200.2"
-    service: vpnd
-

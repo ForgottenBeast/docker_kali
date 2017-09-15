@@ -11,6 +11,7 @@
   copy:
     src: "{{ item }}"
     dest: /tmp/kalistack/{{ item }}
+    mode: "764"
   with_items:
     - Dockerfile
     - runme.sh
@@ -23,10 +24,9 @@
 
 - name: "Write vpn conf files"
   copy:
-    src: "{{ item.value.endpoint }}_{{ item.value.service }}_{{ item.key }}.ovpn"
-    dest: "/tmp/{{ item.key }}.ovpn"
+    src: "{{ kali_vpn_endpoint }}_{{ VPN_SERVICE_NAME }}_kali.ovpn"
+    dest: "/tmp/kali.ovpn"
     mode: "0777"
-  with_dict: "{{ VPN_SERVICES_CERTS }}"
 
 - name: "Create tmp container tmpvol to copy files to volumes"
   docker_container:
@@ -53,6 +53,7 @@
   docker_service:
     state: present
     project_src: /tmp/kalistack
+    build: True
 
 - name: "Remove docker-compose folder"
   become: True
