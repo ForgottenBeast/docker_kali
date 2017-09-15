@@ -1,0 +1,37 @@
+- hosts: vpn_server
+  roles:
+    - role: vpn
+      CLIENTS:
+        kali:
+          ip: "192.168.255.101"
+
+  tasks:
+    - name: "Get vpn container ip"
+      become: True
+      command: docker inspect {{ VPN_SERVICE_NAME }}
+      register: vpndata
+
+    - name: "Parse vpn networking data"
+      set_fact:
+        vpn_data: "{{ vpndata.stdout | from_json }}"
+
+    - name: "Add vpn route"
+      command: ip route add {{ VPN_NETWORK.subnet }} {{ VPN_NETWORK.netmask }}\
+               via {{ vpn_data[0].Networks.bridge.IPAddress }}
+      become: True
+
+    - name: "setup kali reverse ports"
+      become: True
+      iptables:
+        table: nat
+        chain: PREROUTING
+        source_port: "{{item.ports}}"
+        protocol: "{{item.proto}}"
+        jump: DNAT
+        to_destination: "{{ CLIENTS.kali.ip }}"
+      with_items: "{{ kali_reverse_ports }}"
+
+- hosts: kali_server
+  roles:
+    role: kali
+    become: True

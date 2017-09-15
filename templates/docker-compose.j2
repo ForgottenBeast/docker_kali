@@ -1,0 +1,39 @@
+{% macro kalikey(key) %}
+{{ key }}
+{% endmacro %}
+
+version: "2"
+volumes:
+  {{ kali_data_volume }}:
+    external: True
+
+  {{ kali_vpn_volume }}:
+    external: True
+
+services:
+
+  kali:
+    build: /tmp/kalistack/
+    image: kali_docker
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - SSH_PW={{ kali_ssh_pw }}
+      - SSH_USER={{ kali_ssh_user }}
+
+    volumes:
+      - {{ kali_vpn_data }}:/etc/openvpn
+      - {{ kali_data_volume }}:/home/{{ kali_ssh_user }}
+
+  torhh:
+    restart: always
+    image: goldy/tor-hidden-service
+
+    links:
+      - kali
+    environment:
+      KALI_KEY: |
+{{ kalikey(tor_kali_hh_private_key) | indent(8,True) }}
+
+      KALI_PORTS: "22:22"

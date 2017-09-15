@@ -1,0 +1,68 @@
+- name: "Install requirements"
+  include: requirements.yml
+  become: True
+
+- name: "Create service dir"
+  file:
+    name: "/tmp/kalistack"
+    state: directory
+
+- name: "Copy build files"
+  copy:
+    src: "{{ item }}"
+    dest: /tmp/kalistack/{{ item }}
+  with_items:
+    - Dockerfile
+    - runme.sh
+
+- name: "Create docker volumes"
+  include: create_volumes.yml
+  with_items:
+    - "{{ kali_data_volume }}"
+    - "{{ kali_vpn_volume }}"
+
+- name: "Write vpn conf files"
+  copy:
+    src: "{{ item.value.endpoint }}_{{ item.value.service }}_{{ item.key }}.ovpn"
+    dest: "/tmp/{{ item.key }}.ovpn"
+    mode: "0777"
+  with_dict: "{{ VPN_SERVICES_CERTS }}"
+
+- name: "Create tmp container tmpvol to copy files to volumes"
+  docker_container:
+    name: tmpvol
+    volumes: 
+      - "{{ kali_vpn_volume }}:/vpn"
+    image: "{{ alpine_image }}"
+    entrypoint: "sleep 1000"
+
+- name: "Copy vpn config file to kali_data_volume"
+  command: docker cp /tmp/kali.ovpn tmpvol:/vpn/vpn.conf
+
+- name: "Removing tmpvol"
+  docker_container:
+    name: tmpvol
+    state: absent
+
+- name: "Copy docker-compose file"
+  template:
+    src: docker-compose.j2
+    dest: "/tmp/kalistack/docker-compose.yml"
+
+- name: "Deploy kali stack"
+  docker_service:
+    state: present
+    project_src: /tmp/kalistack
+
+- name: "Remove docker-compose folder"
+  become: True
+  file:
+    name: /tmp/kalistack
+    state: absent
+
+- name: "Getting onion url..."
+  command: docker exec -i kalistack_torhh_1 onions
+  register: onions
+
+- debug:
+    msg: "Onion url: {{ onions.stdout }}"

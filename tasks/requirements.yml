@@ -1,0 +1,17 @@
+- name: "Install ansible docker requirements"
+  apt:
+    name: python-setuptools
+    state: installed
+    update_cache: True
+
+- name: "Install python pip"
+  easy_install:
+    name: pip
+    state: latest
+
+- name: "Install docker-py and compose"
+  pip:
+    name: "{{ item }}"
+  with_items:
+    - docker-py
+    - docker-compose
