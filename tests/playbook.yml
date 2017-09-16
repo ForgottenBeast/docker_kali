@@ -21,8 +21,13 @@
       kali:
         ip: "192.168.255.101"
 
+    #port 80 to be able to set up social engineering websites and more easily
+    #give them let's encrypt certs
     kali_reverse_ports:
       - ports: "400:500" #inclusive range for iptables
+        proto: "tcp"
+
+      - ports: "80"
         proto: "tcp"
 
   tasks:
