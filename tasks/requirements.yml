@@ -1,8 +1,11 @@
-- name: "Install: ansible docker requirements"
+- name: "Install: ansible docker requirements and openssl"
   apt:
-    name: python-setuptools
+    name: "{{ item }}"
     state: installed
     update_cache: True
+  with_items:
+    - python-setuptools
+    - openssl
 
 - name: "Install: python pip"
   easy_install:

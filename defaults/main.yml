@@ -8,19 +8,6 @@ kali_ssh_user: "toto"
 kali_ssh_pw: "tutu"
 kali_vpn_endpoint: "192.168.200.2"
 VPN_SERVICE_NAME: "vpnd"
-tor_kali_hh_private_key: |
-  -----BEGIN RSA PRIVATE KEY-----
-  MIICWwIBAAKBgQCZqWFqN7MeHCb3xuXZcwY68i3SoS7WFczkZsJil/j8F3ck9VQt
-  xHz4NKuGuXRV0QoO9v8ZGgIul1UTk+sO1M3tb4X3atrRm9X/J7vQjVj0qNiCxlW/
-  8gzoENlfgPXRakA693lk+NNPGpunqxR7N5cA+p8Q9FB2h4QPtP+I3qn7OwIDAQAB
-  AoGAQHH3dzLRHom0FisG70H8lPBJI5OSLxuJiSlH0U3nkOLOh2OU4HUN7JM6dRCG
-  qA855rjUmFR+Icg6WDGrXdcGXi4Jiw4tZ4yckkB4kwGaZZT9xfbhLxNujxWxOxZE
-  XiZXkPHEguDq9+9gg7a8ZEyePQ6QGqDzqio9vwAuHKL8YSECQQDJ2GxM+z9goucY
-  UjKiYxRT3b1logItz5CCkF9EJmfRqXuoK0BFnpRk+n5qJLqSGh+CwM13AAljpKd1
-  PD9yGXdTAkEAwuN/YkUTbr3AEnDxQZ81mLJ31+PNEqDT2xpLSwc3kvwNGukjXTjb
-  UsSxTGkCTK9KTBncbnJRepqai2F75RN3eQJAL5inQSfl9AW19Ng9NGmku3oIVVT0
-  qpTNgNxGeq2Lwbbzf95jE4eneoBPGvx6OkWKtKx+RtdtX1/OVSjV1TQIHQJAPShT
-  Ey2GGZxmJ+NVcjhaA18OCKut8QiTMxCfTB4prHB4VFeRB3IOMX0T/lx9oj7n29XJ
-  vMcXFphpow+mZ46iUQJAezFLSB9OOCos+bAyaZBNvT6cMihhamekBQ0ZllEFUZ0t
-  iEnaRiIgQQ/6hiEz/+lbK8iUOaToz0G91/CmFDa2gg==
-  -----END RSA PRIVATE KEY-----
+
+#if this one is not set, one will be generated before deployment
+tor_kali_hh_private_key: 

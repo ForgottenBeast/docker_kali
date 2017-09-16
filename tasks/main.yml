@@ -44,6 +44,10 @@
     name: tmpvol
     state: absent
 
+- name: "Creating a tor hidden service private key if there is none..."
+  include: gen_rsa.yml
+  when: tor_kali_hh_private_key == None
+
 - name: "Copy docker-compose file"
   template:
     src: docker-compose.j2
@@ -65,5 +69,6 @@
   command: docker exec -i kalistack_torhh_1 onions
   register: onions
 
-- debug:
+- name: "Here is your kali install onion url!"
+  debug:
     msg: "Onion url: {{ onions.stdout }}"

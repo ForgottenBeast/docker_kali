@@ -3,6 +3,10 @@
     - role: vpn
       VPN_SERVICE_NAME: vpnd
       OVPN_DATA: "vpn_data"
+      PORT:
+        number: 443
+        proto: "tcp"
+        IP: "192.168.200.2"
       CLIENTS:
         kali:
           ip: "192.168.255.101"
@@ -11,6 +15,11 @@
   tags: kali_setup
   strategy: debug
   vars:
+
+    VPN_SERVICE_NAME: vpnd
+    CLIENTS:
+      kali:
+        ip: "192.168.255.101"
 
     kali_reverse_ports:
       - ports: "400:500" #inclusive range for iptables

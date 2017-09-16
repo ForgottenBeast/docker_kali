@@ -1,0 +1,17 @@
+- name: "Generating new rsa private key..."
+  command: openssl genrsa -out /tmp/private.pem 1024
+
+- name: "Copying rsa private key"
+  fetch:
+    flat: True
+    src: "/tmp/private.pem"
+    dest: "tor_private_key.pem"
+
+- name: "Reading rsa private key"
+  set_fact:
+    tor_kali_hh_private_key: "{{ lookup('file','tor_private_key.pem') }}"
+
+- name: "Deleting private key"
+  file:
+    name: /tmp/private.pem
+    state: absent
