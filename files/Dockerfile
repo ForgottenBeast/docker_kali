@@ -22,7 +22,8 @@ RUN echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
 RUN mkdir /var/run/sshd;\
     chmod 0755 /var/run/sshd;
 
-RUN apt-get install -y openvpn resolvconf
+RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
+RUN apt-get install -y openvpn resolvconf iptables
 
 COPY runme.sh /runme.sh
 EXPOSE 22
