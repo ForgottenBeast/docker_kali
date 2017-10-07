@@ -28,6 +28,12 @@
     dest: "/tmp/kali.ovpn"
     mode: "0777"
 
+- name: "Add vpnfailsafe script"
+  copy:
+    src: vpnfailsafe.sh
+    dest: /tmp/vpnfailsafe.sh
+    mode: "0764"
+
 - name: "Create tmp container tmpvol to copy files to volumes"
   docker_container:
     name: tmpvol
@@ -36,8 +42,10 @@
     image: "{{ alpine_image }}"
     entrypoint: "sleep 1000"
 
-- name: "Copy vpn config file to kali_data_volume"
-  command: docker cp /tmp/kali.ovpn tmpvol:/vpn/vpn.conf
+- name: "Copy vpn config files to kali_data_volume"
+  command: |
+    docker cp /tmp/kali.ovpn tmpvol:/vpn/vpn.conf
+    docker cp /tmp/vpnfailsafe.sh tmpvol:/vpn/vpnfailsafe.sh
 
 - name: "Removing tmpvol"
   docker_container:
